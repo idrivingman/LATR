@@ -11,11 +11,11 @@ mean = [0.485, 0.456, 0.406]
 std = [0.229, 0.224, 0.225]
 
 dataset = '1000'
-dataset_dir = './data/openlane/images/'
-data_dir = './data/openlane/lane3d_1000/'
+dataset_dir = '/nvmedata/lizhiqi/lane_3d_mini/images/'
+data_dir = '/nvmedata/lizhiqi/lane_3d_mini/lane3d_1000/'
 
 batch_size = 8
-nworkers = 10
+nworkers = 8
 num_category = 21
 pos_threshold = 0.3
 top_view_region = np.array([
@@ -49,17 +49,17 @@ latr_cfg = dict(
     num_group = 1,
     sparse_num_group = 4,
     encoder = dict(
-        type='ResNet',
-        depth=50,
-        num_stages=4,
-        out_indices=(1, 2, 3),
-        frozen_stages=1,
-        norm_cfg=dict(type='BN2d', requires_grad=False),
-        norm_eval=True,
-        style='caffe',
-        dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),
-        stage_with_dcn=(False, False, True, True),
-        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')
+        type='ResNet',#type： 模型类型，这里指定为 'ResNet'，表示要构建一个 ResNet 模型。
+        depth=50,#depth： ResNet 的深度，这里设置为 50，表示使用 ResNet-50 结构。
+        num_stages=4,#num_stages： ResNet 的阶段数，即残差块的数量，默认为 4。
+        out_indices=(1, 2, 3),#out_indices： 输出的阶段索引，这里设置为 (1, 2, 3)，表示输出 ResNet 的第 2、3、4 个阶段的特征图。
+        frozen_stages=1,# frozen_stages： 冻结的阶段数，即前几个阶段的参数是否冻结不更新。这里设置为 1，表示只冻结 ResNet 的第一个阶段。
+        norm_cfg=dict(type='BN2d', requires_grad=False),#norm_cfg： 归一化层的配置，这里指定为 Batch Normalization，并且设置为不需要梯度更新。
+        norm_eval=True,# norm_eval： 归一化层是否在评估模式下，这里设置为 True，表示在评估模式下使用 Batch Normalization。
+        style='caffe',#style： ResNet 的风格，可以选择 'caffe' 或 'pytorch'，这里选择了 'caffe' 风格。
+        dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),#dcn： 双线性插值卷积（Deformable Convolution）的配置，这里指定为 DCNv2 类型，设置了 deformable groups 为 1，并且在 stride 不为 1 时不使用 Fallback。这表示在 ResNet 的第 3 和第 4 个阶段使用了双线性插值卷积。
+        stage_with_dcn=(False, False, True, True),#stage_with_dcn： 指示每个阶段是否使用双线性插值卷积，这里设置为 (False, False, True, True)，表示在 ResNet 的第 3 和第 4 个阶段使用了双线性插值卷积。
+        init_cfg=dict(type='Pretrained', checkpoint='/home/lizhiqi/LATR/resnet50-19c8e357.pth')#init_cfg： 模型初始化的配置，这里指定了使用预训练的模型参数，通过 'torchvision://resnet50' 指定了预训练模型的地址，即使用 PyTorch 中 torchvision 提供的预训练的 ResNet-50 模型参数。
     ),
     neck = dict(
         type='FPN',
@@ -153,11 +153,11 @@ sparse_ins_decoder=Config(
         sparse_decoder_weight=5.0,
 ))
 
-nepochs = 24
+nepochs = 20
 resize_h = 720
 resize_w = 960
 
-eval_freq = 8
+eval_freq = 1
 optimizer_cfg = dict(
     type='AdamW',
     lr=2e-4,

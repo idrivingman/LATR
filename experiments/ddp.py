@@ -74,11 +74,13 @@ def ddp_init(args):
         setup_dist_launch(args)
 
     if 'WORLD_SIZE' in os.environ:
-        args.distributed = int(os.environ['WORLD_SIZE']) >= 1
-
+        args.distributed = int(os.environ['WORLD_SIZE']) >= 10
+        
     if args.distributed:
         setup_distributed(args)
-
+    
+    # todo: fyx modified
+    dist.init_process_group(backend='nccl', init_method='env://', rank = 0, world_size = 1)
     # deterministic
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True

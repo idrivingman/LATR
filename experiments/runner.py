@@ -30,6 +30,7 @@ from mmcv.runner.optimizer import build_optimizer
 class Runner:
     def __init__(self, args):
         self.args = args
+        args.dist = False
         set_work_dir(self.args)
         self.logger = create_logger(args)
 
@@ -47,10 +48,10 @@ class Runner:
 
         self.val_gt_file = ops.join(args.save_path, 'test.json')
         if not args.evaluate:
-            self.train_dataset, self.train_loader, self.train_sampler = self._get_train_dataset()
+            self.train_dataset, self.train_loader= self._get_train_dataset()
         else:
             self.train_dataset, self.train_loader, self.train_sampler = [],[],[]
-        self.valid_dataset, self.valid_loader, self.valid_sampler = self._get_valid_dataset()
+        self.valid_dataset, self.valid_loader = self._get_valid_dataset()
 
         if 'openlane' in args.dataset_name:
             self.evaluator = eval_3D_lane.LaneEval(args, logger=self.logger)
@@ -75,10 +76,11 @@ class Runner:
 
     def train(self):
         args = self.args
+        print(args.eval_freq)
 
         # Get Dataset
         train_loader = self.train_loader
-        train_sampler = self.train_sampler
+        #train_sampler = self.train_sampler
 
         global lowest_loss, best_f1_epoch, best_val_f1, best_epoch
         # Define model or resume
@@ -95,7 +97,7 @@ class Runner:
             # Save model
             if not with_eval:
                 self.save_checkpoint({
-                    'state_dict': model.module.state_dict(),
+                    'state_dict': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
                     'scheduler': scheduler.state_dict()
                 }, False, epoch+1, self.args.save_path)
@@ -122,7 +124,7 @@ class Runner:
                 if not to_save:
                     return
                 self.save_checkpoint({
-                        'state_dict': model.module.state_dict(),
+                        'state_dict': model.state_dict(),
                         'optimizer': optimizer.state_dict(),
                         'scheduler': scheduler.state_dict()
                     }, to_copy, epoch+1, self.args.save_path)
@@ -132,7 +134,6 @@ class Runner:
             if is_main_process():
                 self.logger.info("\n => Start train set for EPOCH {}".format(epoch + 1))
                 self.logger.info('lr is set to {}'.format(optimizer.param_groups[0]['lr']))
-            
             if args.distributed:
                 train_sampler.set_epoch(epoch)
 
@@ -227,7 +228,7 @@ class Runner:
             
                 self.log_eval_stats(eval_stats)
 
-            dist.barrier()
+            #dist.barrier()
             torch.cuda.empty_cache()
 
         # at the end of training
@@ -538,9 +539,9 @@ class Runner:
             self.logger.info('using Apollo Dataset')
             train_dataset = ApolloLaneDataset(args.dataset_dir, ops.join(args.data_dir, 'train.json'), args, data_aug=True)
         
-        train_loader, train_sampler = get_loader(train_dataset, args)
+        train_loader = get_loader(train_dataset, args)
 
-        return train_dataset, train_loader, train_sampler
+        return train_dataset, train_loader
 
     def _get_model_ddp(self):
         args = self.args
@@ -566,7 +567,7 @@ class Runner:
 
         model, best_epoch, lowest_loss, best_f1_epoch, best_val_f1, \
             optim_saved_state, schedule_saved_state = self.resume_model(model)
-        dist.barrier()
+        #dist.barrier()
         # DDP setting
         if args.distributed:
             model = DDP(
@@ -632,8 +633,8 @@ class Runner:
         else:
             valid_dataset = ApolloLaneDataset(args.dataset_dir, os.path.join(args.data_dir, 'test.json'), args)
 
-        valid_loader, valid_sampler = get_loader(valid_dataset, args)
-        return valid_dataset, valid_loader, valid_sampler
+        valid_loader = get_loader(valid_dataset, args)
+        return valid_dataset, valid_loader
 
     def save_eval_result_once(self, args, img_path, lanelines_pred, lanelines_prob):
         # 3d eval result

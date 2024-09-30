@@ -4,12 +4,12 @@ import numpy as np
 
 
 dataset_name = 'openlane'
-dataset = '300' # '300' | '1000'
+#dataset = '300' # '300' | '1000'
 
 #  The path of dataset json files (annotations)
-data_dir = './data/openlane/lane3d_300/'
+#data_dir = './data/openlane/lane3d_300/'
 # The path of dataset image files (images)
-dataset_dir = './data/openlane/images/'
+#dataset_dir = './data/openlane/images/'
 output_dir = dataset_name
 
 org_h = 1280
@@ -18,11 +18,11 @@ crop_y = 0
 
 ipm_h = 208
 ipm_w = 128
-resize_h = 360
-resize_w = 480
+#resize_h = 360
+#resize_w = 480
 
-mean = [0.485, 0.456, 0.406]
-std = [0.229, 0.224, 0.225]
+#mean = [0.485, 0.456, 0.406]
+#std = [0.229, 0.224, 0.225]
 
 cam_height = 1.55
 pitch = 3
@@ -35,7 +35,7 @@ mod = None
 
 position_embedding = 'learned'
 max_lanes = 20
-num_category = 21
+#num_category = 21
 prob_th = 0.5
 num_class = 21 # 1 bgd | 1 lanes
 
@@ -74,11 +74,11 @@ print_freq = 50
 save_freq = 50
 
 # ddp setting
-dist = True
+dist = False
 sync_bn = True
 cudnn = True
 
-distributed = True
+distributed = False
 local_rank = None #TODO
 gpu = 0
 world_size = 1
@@ -87,10 +87,10 @@ nodes = 1
 # for reload ckpt
 eval_ckpt = ''
 resume_from = ''
-output_dir = 'openlane'
+output_dir = 'openlane_1000_bs8_lr2e4_epoch20_coor_redu16_scc7_8_oncemore'
 evaluate_case = ''
-eval_freq = 8 # eval freq during training
 
+#TODO:lzq modify: different experiment should change the path to save model and log
 save_json_path = None
 save_root = 'work_dirs'
 save_prefix = osp.join(os.getcwd(), save_root)

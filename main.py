@@ -4,15 +4,16 @@ from mmcv.utils import Config, DictAction
 from utils.utils import *
 from experiments.ddp import *
 from experiments.runner import *
+import os
 
 
 def get_args():
     parser = argparse.ArgumentParser()
     # DDP setting
-    parser.add_argument('--distributed', action='store_true')
-    parser.add_argument("--local_rank", type=int)
+    parser.add_argument('--distributed', default=False)
+    parser.add_argument("--local_rank", type=int,default=0)
     parser.add_argument('--gpu', type=int, default=0)
-    parser.add_argument('--world_size', type=int, default=1)
+    parser.add_argument('--world_size', type=int, default=0)
     parser.add_argument('--nodes', type=int, default=1)
     parser.add_argument('--use_slurm', default=False, action='store_true')
 
@@ -45,4 +46,7 @@ def main():
 
 
 if __name__ == '__main__':
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0' 
     main()

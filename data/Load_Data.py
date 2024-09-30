@@ -320,9 +320,7 @@ class LaneDataset(Dataset):
                _gt_laneline_category_org, info_dict
 
     def __len__(self):
-        """
-        Conventional len method
-        """
+        
         return self.n_samples
 
     # new getitem, WIP
@@ -579,7 +577,7 @@ def get_loader(transformed_dataset, args):
                                 persistent_workers=args.nworkers > 0,
                                 worker_init_fn=seed_worker,
                                 generator=g)
-
+        
     if args.dist:
         return data_loader, data_sampler
     return data_loader
