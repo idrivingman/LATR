@@ -3,3 +3,5 @@
 work_dirs/
 .vscode/
 mmcv/
+requirements.txt
+environment.yml

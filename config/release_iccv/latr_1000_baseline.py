@@ -14,7 +14,7 @@ dataset = '1000'
 dataset_dir = '/nvmedata/lizhiqi/lane_3d_mini/images/'
 data_dir = '/nvmedata/lizhiqi/lane_3d_mini/lane3d_1000/'
 
-batch_size = 8
+batch_size = 4
 nworkers = 8
 num_category = 21
 pos_threshold = 0.3
@@ -153,11 +153,11 @@ sparse_ins_decoder=Config(
         sparse_decoder_weight=5.0,
 ))
 
-nepochs = 20
+nepochs = 26
 resize_h = 720
 resize_w = 960
 
-eval_freq = 1
+eval_freq = 2
 optimizer_cfg = dict(
     type='AdamW',
     lr=2e-4,
