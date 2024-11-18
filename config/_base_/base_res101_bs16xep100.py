@@ -87,7 +87,7 @@ nodes = 1
 # for reload ckpt
 eval_ckpt = ''
 resume_from = ''
-output_dir = 'openlane_1000_bs4_lr2e4_epoch26'
+output_dir = 'openlane_300_bs4_lr2e4_epoch26_add_coor_re16'
 evaluate_case = ''
 
 #TODO:lzq modify: different experiment should change the path to save model and log

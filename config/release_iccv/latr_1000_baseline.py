@@ -10,9 +10,9 @@ mod = 'release_iccv/latr_1000_baseline'
 mean = [0.485, 0.456, 0.406]
 std = [0.229, 0.224, 0.225]
 
-dataset = '1000'
+dataset = '300'
 dataset_dir = '/nvmedata/lizhiqi/lane_3d_mini/images/'
-data_dir = '/nvmedata/lizhiqi/lane_3d_mini/lane3d_1000/'
+data_dir = '/nvmedata/lizhiqi/lane_3d_mini/lane3d_300/'
 
 batch_size = 4
 nworkers = 8

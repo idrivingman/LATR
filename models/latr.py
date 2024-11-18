@@ -72,10 +72,10 @@ class LATR(nn.Module):
         #neck_out:4 tensors:[bs,256,90,120],[bs,256,45,60],[bs,256,23,30],[bs,256,12,15]
         neck_out = self.ms2one(neck_out)#after fpn_aggre the feat_shape is (4,256,90,120)
         # lzq modify:add cooratt and scc to enhance fea after fpn_agg
-        '''
+        
         neck_out = self.cooratt(neck_out)
-        neck_out = self.scc(neck_out)
-        '''
+        #neck_out = self.scc(neck_out)
+        
         output = self.head(
             dict(
                 x=neck_out, 
